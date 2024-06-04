@@ -8,7 +8,8 @@ class GlobalState:
     """
     Class to store global variables
     """
-    heart_area = [.54, .5, -.14, .16]
+    heart_area = None
+    # heart_area = [.54, .5, -.14, .16]
     smooth_factor = 3
     video_file_path = os.path.join(os.path.dirname(__file__), 'videos/')
     input_path = None

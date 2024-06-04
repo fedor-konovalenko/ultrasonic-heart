@@ -15,7 +15,7 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 
 
 
-def segment(video_path: str, model_path: str, start: int, fstep: int, crop: list) -> tuple:
+def segment(video_path: str, model_path: str, start: int, fstep: int, crop=None) -> tuple:
     """
     runs YOLO segmentation model and calculates the LV Area
     """
@@ -28,11 +28,12 @@ def segment(video_path: str, model_path: str, start: int, fstep: int, crop: list
     for fr in tqdm(range(start, stop, fstep), desc=f'processing ECHO'):
         cap.set(cv2.CAP_PROP_POS_FRAMES, fr)
         _, frame = cap.read()
-        new_w = int(frame.shape[1] * crop[1])
-        new_h = int(frame.shape[0] * crop[0])
-        new_left = int(frame.shape[1] / 2 + crop[3] * new_w - new_w / 2)
-        new_top = int(frame.shape[0] / 2 + crop[2] * new_h - new_h / 2)
-        frame = frame[new_top:new_top + new_h, new_left:new_left + new_w]
+        if crop is not None:
+            new_w = int(frame.shape[1] * crop[1])
+            new_h = int(frame.shape[0] * crop[0])
+            new_left = int(frame.shape[1] / 2 + crop[3] * new_w - new_w / 2)
+            new_top = int(frame.shape[0] / 2 + crop[2] * new_h - new_h / 2)
+            frame = frame[new_top:new_top + new_h, new_left:new_left + new_w]
         frame_m = frame
         inputs = frame #torch.Tensor(frame).to(device)
         with torch.no_grad():
